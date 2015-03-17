@@ -20,42 +20,45 @@ e) List page (To list blog pages by date, tags,etc.,)
 ```
 
 #Page element, applicable for all pages
-page (object)
+page    (object)
+  href  (string)
   title (string)
-  css (array(string))
-  js (array(string))
-  
-link (object)
-  title
-  href
+  css   (array(string))
+  js    (array(string))
 
-#Home
-page (object)
-last_blog (blog)
-recent_blogs (array(link))
-recent_tags (array(link))
-
-#Blog
-page (object)
-blog (object)
+link    (object)
   title (string)
-  sub_title (string)
-  img (string)
-  date (string)
-  content (string)
-  tags (array(link))
-  links
-    prev (link)
-    next (link)
+  href  (string)
 
-#Calendar
+#Home page
+page          (object)
+last_blog     (blog)
+recent_blogs  (array(link))
+recent_tags   (array(link))
+
+#Blog page
+page          (object)
+blog          (object)
+  title       (string)
+  sub_title   (string)
+  img         (link)
+  date        (date)
+  content     (string)
+  tags        (array(link))
+  prev        (link)
+  next        (link)
+
+#Calendar*
 page        (object)
 calendar    (blog)
   year      (int)
-  
-#tags
+  month
+
+#Tags
 tag
   link      (link)
   last_used (date)
   count     (int)
+  
+#List*
 ```
