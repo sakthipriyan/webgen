@@ -18,8 +18,7 @@ e) List page (To list blog pages by date, tags,etc.,)
 
 #Data
 ```
-
-#Page element, applicable for all pages
+#Common objects
 page    (object)
   href  (string)
   title (string)
@@ -31,10 +30,11 @@ link    (object)
   href  (string)
 
 #Home page
-page          (object)
-last_blog     (blog)
-recent_blogs  (array(link))
-recent_tags   (array(link))
+page            (object)
+home            (object)
+  last_blog     (blog)
+  recent_blogs  (array(link))
+  recent_tags   (array(link))
 
 #Blog page
 page          (object)
@@ -48,17 +48,25 @@ blog          (object)
   prev        (link)
   next        (link)
 
-#Calendar*
+#Calendar
 page        (object)
-calendar    (blog)
+calendar    (object)
   year      (int)
-  month
+  month     (dict(month:array(link)))
 
 #Tags
-tag
+page        (object)
+tag         (object)
   link      (link)
   last_used (date)
   count     (int)
-  
-#List*
+
+#List
+page          (object)
+list          (object)
+  title       (string)
+  sub_title   (string)
+  links       (array(link))
+  prev        (link)
+  next        (link)
 ```
