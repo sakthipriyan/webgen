@@ -8,9 +8,8 @@ def main():
 	logger = logging.getLogger(__name__)
 	logger.info('Generating website...')
 	config = json.load(open(sys.argv[1]))
+	source.copy_files(config)
 	src = config['base_dir']
-	web_copy = config['web_copy']
-	source.copy_files(src,web_copy)
 	source.list_blogs(src + '/src')
 	logger.info('Completed')
 

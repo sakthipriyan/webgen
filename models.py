@@ -11,6 +11,7 @@ class Tag:
 
 class Page(object):
   def __init__(self, *args, **kwargs):
+    self.base = kwargs.get('base')
     self.href = kwargs.get('href')
     self.title = kwargs.get('title')
     self.css = kwargs.get('css')
@@ -30,7 +31,8 @@ class BlogPage(Page):
     self.sub_title = kwargs.get('sub_title')
     self.img = kwargs.get('img')
     self.date = kwargs.get('date')
-    self.content = kwargs.get('content')
+    self.html = kwargs.get('html')
+    self.markdown = kwargs.get('markdown')
     self.tags = kwargs.get('tags')
     self.prev = kwargs.get('prev')
     self.next = kwargs.get('next')

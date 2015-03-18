@@ -19,7 +19,7 @@ def list_blogs(src):
 	logger.debug('Total number of blogs available %s', len(blogs))
 	return blogs
 
-def copy_files(src,web_copy):
+def copy_files(config):
 	src = config['base_dir']
 	web_copy = config['web_copy']
 	logger.info('Source directory %s', src)
@@ -28,3 +28,4 @@ def copy_files(src,web_copy):
 	logger.info('Website is generated at %s', dist)
 	for folder in web_copy:
 		shutil.copytree('%s/web/%s' % (src,folder), '%s/%s' % (dist,folder))
+
