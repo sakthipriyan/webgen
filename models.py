@@ -9,10 +9,17 @@ class Tag:
     self.last_used = kwargs.get('last_used')
     self.count = kwargs.get('count')
 
+class LinkItem:
+    def __init__(self, *args, **kwargs):
+        self.date = kwargs.get('date')
+        self.link = kwargs.get('link')
+        self.title = kwargs.get('title')
+        self.sub_title = kwargs.get('sub_title')    
+        self.tags = kwargs.get('tags')
+
 class Page(object):
   def __init__(self, *args, **kwargs):
     self.base = kwargs.get('base')
-    self.href = kwargs.get('href')
     self.title = kwargs.get('title')
     self.css = kwargs.get('css')
     self.js = kwargs.get('js')
@@ -29,26 +36,16 @@ class BlogPage(Page):
     super(BlogPage, self).__init__(*args, **kwargs)
     self.title = kwargs.get('title')
     self.sub_title = kwargs.get('sub_title')
-    self.img = kwargs.get('img')
     self.date = kwargs.get('date')
-    self.html = kwargs.get('html')
     self.markdown = kwargs.get('markdown')
+    self.html = kwargs.get('html')
     self.tags = kwargs.get('tags')
     self.prev = kwargs.get('prev')
     self.next = kwargs.get('next')
 
-class CalendarPage(Page):
-  def __init__(self, *args, **kwargs):
-    super(CalendarPage, self).__init__(*args, **kwargs)
-    self.year = kwargs.get('year')
-    self.months = kwargs.get('months')
-    self.recent_tags = kwargs.get('recent_tags')
-
 class ListPage(Page):
   def __init__(self, *args, **kwargs):
-    super(CalendarPage, self).__init__(*args, **kwargs)
-    self.title = kwargs.get('title')
-    self.sub_title = kwargs.get('sub_title')
-    self.links = kwargs.get('links')
+    super(ListPage, self).__init__(*args, **kwargs)
+    self.link_items = kwargs.get('link_items') 
     self.prev = kwargs.get('prev')
     self.next = kwargs.get('next')
