@@ -4,13 +4,14 @@ import sys
 import json
 
 def main():
-	logging.basicConfig(level=logging.DEBUG,format='%(asctime)-15s %(levelname)s %(name)s %(message)s')
-	logger = logging.getLogger(__name__)
+	logging.basicConfig(level=logging.DEBUG,format='%(asctime)-15s %(levelname)-5s %(name)-8s %(message)s')
+	logger = logging.getLogger('webgen')
 	logger.info('Generating website...')
 	config = json.load(open(sys.argv[1]))
 	source.copy_files(config)
 	src = config['base_dir']
-	source.list_blogs(src + '/src')
+	blogs = source.list_blogs(src + '/src')
+	logger.info(blogs)
 	logger.info('Completed')
 
 if __name__ == '__main__':

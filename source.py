@@ -6,6 +6,7 @@ import shutil
 logger = logging.getLogger(__name__)
 
 def list_blogs(src):
+	logger.debug('Looking at src directory %s', src)
 	blogs = []
 	for year in os.listdir(src):
 		year_dir = src + '/' + year
@@ -28,4 +29,6 @@ def copy_files(config):
 	logger.info('Website is generated at %s', dist)
 	for folder in web_copy:
 		shutil.copytree('%s/web/%s' % (src,folder), '%s/%s' % (dist,folder))
+
+
 
