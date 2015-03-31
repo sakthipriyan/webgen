@@ -18,11 +18,11 @@ def list_blogs(src, gen_draft=False):
 				day_dir = month_dir + '/' + day
 				for article in os.listdir(day_dir):
 					article_path = day_dir + '/' + article
+					article_path = '/'.join(article_path.split('/')[-4:])
 					if gen_draft or article_path.endswith('.md') and not article_path.endswith('draft.md'):
 						blogs.append(BlogItem(article_path))
 					else:
 						skipped = skipped + 1
-
 	logger.debug('Total number of blogs loadded %s', len(blogs))
 	logger.debug('Total number of blogs skipped %s', skipped)
 	blogs.sort(key = lambda r : r.date)	

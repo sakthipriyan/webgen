@@ -1,5 +1,20 @@
 {
 	"base_dir" : "/home/sakthipriyan/ws/blog/sakthipriyan.com",
 	"web_copy" : ["css","fonts","img","js"],
-	"gen_draft" : true
+
+	"gen_draft" : true,
+	
+	"html" : {
+		"css" : [
+			"bootstrap.min.css",
+			"font-awesome.min.css",
+			"highlight-github.min.css",
+			"main.css"],
+		"js" : [
+			"bootstrap.min.js",
+			"highlight.min.js",
+			"jquery-1.11.2.min.js",
+			"main.js"]
+	}
+	
 }

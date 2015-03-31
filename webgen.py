@@ -1,5 +1,5 @@
 import logging
-import source
+import source, generator
 import sys
 import json
 
@@ -11,11 +11,11 @@ def main():
 	source.copy_files(config)
 	src = config['base_dir']
 	blogs = source.list_blogs(src + '/src',config['gen_draft'])
-	
+	generator.generateCalendar(blogs,config)
 	logger.info(blogs)
-	logger.info('Completed')
+	logger.info('Completed generating website')
 
 if __name__ == '__main__':
 	if(len(sys.argv)==1):
-		sys.exit('Usage: %s /path/to/config.json\nMore details at https://github.com/sakthipriyan/webgen' % sys.argv[0])
+		sys.exit('Usage: %s path/to/config.json\nMore details at https://github.com/sakthipriyan/webgen' % sys.argv[0])
 	main()
