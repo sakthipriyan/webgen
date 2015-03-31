@@ -1,4 +1,5 @@
 {
 	"base_dir" : "/home/sakthipriyan/ws/blog/sakthipriyan.com",
-	"web_copy" : ["css","fonts","img","js"]
+	"web_copy" : ["css","fonts","img","js"],
+	"gen_draft" : true
 }

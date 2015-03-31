@@ -16,57 +16,24 @@ d) Tags page (List of tags used across the blog pages)
 
 e) List page (To list blog pages by date, tags,etc.,)
 
-#Data
+
+##Extension
+
+<b>.md</b> For all public files
+<b>.draft.md</b> For all draft versions
+
+##Configuration
+
 ```
-#Common objects
-page    (object)
-  href  (string)
-  title (string)
-  css   (array(string))
-  js    (array(string))
-
-link    (object)
-  title (string)
-  href  (string)
-
-#Home page
-page            (object)
-home            (object)
-  last_blog     (blog)
-  recent_blogs  (array(link))
-  recent_tags   (array(link))
-
-#Blog page
-page          (object)
-blog          (object)
-  title       (string)
-  sub_title   (string)
-  img         (link)
-  date        (date)
-  content     (string)
-  tags        (array(link))
-  prev        (link)
-  next        (link)
-
-#Calendar
-page        (object)
-calendar    (object)
-  year      (int)
-  month     (dict(month:array(link)))
-
-#Tags
-page        (object)
-tag         (object)
-  link      (link)
-  last_used (date)
-  count     (int)
-
-#List
-page          (object)
-list          (object)
-  title       (string)
-  sub_title   (string)
-  links       (array(link))
-  prev        (link)
-  next        (link)
+{
+  "base_dir" : "/home/sakthipriyan/ws/blog/sakthipriyan.com",
+  "web_copy" : ["css","fonts","img","js"],
+  "gen_draft" : true
+}
 ```
+
+Config    | Description
+----------| -------------------------------------------------------------------
+base_dir  | base directory of the website repo
+web_copy  | Folders to be copied in the generated websites
+gen_draft | set to true if draft files has to be included in website generation

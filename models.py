@@ -1,3 +1,5 @@
+import datetime
+
 class Link:
   def __init__(self, *args, **kwargs):
     self.title = kwargs.get('title')
@@ -49,3 +51,15 @@ class ListPage(Page):
     self.link_items = kwargs.get('link_items') 
     self.prev = kwargs.get('prev')
     self.next = kwargs.get('next')
+
+class BlogItem:
+    def __init__(self, path):
+        date_str = ''.join(path.split('/')[-4:-1])
+        self.date = datetime.datetime.strptime(date_str, "%Y%m%d").date()
+        self.path = path    
+    
+    def __str__(self):
+        return '(date=%s, path=%s)' % (self.date, self.path)
+
+    def __repr__(self):
+        return self.__str__()

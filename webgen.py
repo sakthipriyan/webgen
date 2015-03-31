@@ -10,7 +10,8 @@ def main():
 	config = json.load(open(sys.argv[1]))
 	source.copy_files(config)
 	src = config['base_dir']
-	blogs = source.list_blogs(src + '/src')
+	blogs = source.list_blogs(src + '/src',config['gen_draft'])
+	
 	logger.info(blogs)
 	logger.info('Completed')
 

@@ -2,12 +2,14 @@ import logging
 import os
 import logging
 import shutil
+from models import BlogItem 
 
 logger = logging.getLogger(__name__)
 
-def list_blogs(src):
+def list_blogs(src, gen_draft=False):
 	logger.debug('Looking at src directory %s', src)
 	blogs = []
+	skipped = 0
 	for year in os.listdir(src):
 		year_dir = src + '/' + year
 		for month in os.listdir(year_dir):
@@ -16,9 +18,16 @@ def list_blogs(src):
 				day_dir = month_dir + '/' + day
 				for article in os.listdir(day_dir):
 					article_path = day_dir + '/' + article
-					blogs.append(article_path)
-	logger.debug('Total number of blogs available %s', len(blogs))
+					if gen_draft or article_path.endswith('.md') and not article_path.endswith('draft.md'):
+						blogs.append(BlogItem(article_path))
+					else:
+						skipped = skipped + 1
+
+	logger.debug('Total number of blogs loadded %s', len(blogs))
+	logger.debug('Total number of blogs skipped %s', skipped)
+	blogs.sort(key = lambda r : r.date)	
 	return blogs
+
 
 def copy_files(config):
 	src = config['base_dir']

@@ -15,8 +15,11 @@ def generateBlog(base,md_path):
 	env = getEnvironment(base + '/web/html')
 	template = env.get_template('blog.html')
 	html = template.render(data=homepage)
-	f = open(base + '/dist/' + md_path.replace('.md','.html'),'w')
-	f.write(html)
-	f.close()
+	filename = base + '/dist/' + md_path.replace('.md','.html')
+	if not os.path.exists(os.path.dirname(filename)):
+    	os.makedirs(os.path.dirname(filename))
+	with open(filename, "w") as f:
+		f.write(html)
+		f.close()
 
 generateBlog('/home/sakthipriyan/ws/blog/sakthipriyan.com','2015/03/12/first-blog-done.md')
