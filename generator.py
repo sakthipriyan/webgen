@@ -1,5 +1,5 @@
 from jinja2 import Environment, FileSystemLoader
-from models import HomePage, BlogPage
+from models import HomePage, BlogPage, Link
 import logging
 import collections
 import markdown
@@ -29,12 +29,8 @@ def generateBlog(base,md_path):
 
 #generateBlog('/home/sakthipriyan/ws/blog/sakthipriyan.com','2015/03/12/first-blog-done.md')
 
-
 def generateBlogs(blogs,config):
 	generated_blogs = []
-	data = {}
-	base_uri = config['base_uri']
-	blog_dir = config['blogs_dir']
 	for blog in blogs:
 		file_path = config['base_dir'] + '/src/' + blog.path
 		logger.debug('Processing file %s' % file_path)
@@ -43,38 +39,44 @@ def generateBlogs(blogs,config):
 			if(len(content) < 4):
 				logger.warn('File %s Contains less than 4 lines, skipping' % blog.path)
 				continue
-			title = content[0].strip()
-			sub_title = content[1].strip()
-			tags =  [s.strip() for s in content[2].split(',')]
-			md = ''.join(content[3:])
-			html = markdown.markdown(md)
-			url = config['base_uri'] + config['blogs_dir'] + blog.path.replace('.md','.html')
-			generated_blogs.append(BlogPage(title=title, sub_title=sub_title, date=blog.date, markdown=md,html=html,tags=tags, url=url))
-  
-			logger.debug('Title : %s', title)
-			logger.debug('Sub Title : %s', sub_title)
-			logger.debug('date : %s', blog.date)
-			logger.debug('Tags : %s', tags)
-			logger.debug('Markdown : %s', md)
-			logger.debug('HTML : %s', html)
-			logger.debug('url : %s', url)
+			generated_blogs.append(getBlogPage(config, content, blog))
+	linkPrevNext(generated_blogs)
+	data = publishBlogs(config, generated_blogs)
+	publishCalendar(config, data)
+	publishTags(config, data)
 
 
-	print generated_blogs
+def publishBlogs(config, generated_blogs):
+	pass
 
-	#	break
+def publishCalendar(config, data):
+	pass
 
-		
-	# prevBlog = None
-	# nextBlog = None
-	# for index, currentBlog in enumerate(blogs):
-	# 	if(len(blogs) > index + 1):
-	# 		nextBlog = blogs[index+1]
-	# 	else:
-	# 		nextBlog = None
-	# 	print prevBlog, currentBlog, nextBlog
-	# 	prevBlog = currentBlog
+def publishTags(config, data):
+	pass
 
+def linkPrevNext(generated_blogs):
+	prevBlog = None
+	nextBlog = None
+	for index, currentBlog in enumerate(generated_blogs):
+		if(len(generated_blogs) > index + 1):
+			nextBlog = generated_blogs[index+1]
+		else:
+			nextBlog = None
+		if prevBlog is not None:
+			currentBlog.prev = Link(prevBlog.title, prevBlog.href)
+		if nextBlog is not None:
+			currentBlog.next = Link(nextBlog.title, nextBlog.href)
+		prevBlog = currentBlog
+
+def getBlogPage(config, content, blog):
+	title = content[0].strip()
+	sub_title = content[1].strip()
+	tags =  [s.strip() for s in content[2].split(',')]
+	md = ''.join(content[3:])
+	html = markdown.markdown(md)
+	href = config['base_uri'] + config['blogs_dir'] + blog.path.replace('.md','.html')
+	return BlogPage(title=title, sub_title=sub_title, date=blog.date, markdown=md,html=html,tags=tags, href=href)
 
 def generateCalendar(blogs,config):
 	logger.debug('Generating calendar')
@@ -89,10 +91,7 @@ def generateCalendar(blogs,config):
 		addToDictArray(calendar, ymd, blog)
 
 	od = collections.OrderedDict(sorted(calendar.items()))
-	print od
-
 	logger.debug('%s pages generated for calendar' % count)
-
 
 def two_digit(number):
 	if number > 9:

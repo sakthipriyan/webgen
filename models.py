@@ -1,9 +1,13 @@
 import datetime
 
 class Link:
-  def __init__(self, *args, **kwargs):
-    self.title = kwargs.get('title')
-    self.href = kwargs.get('href')
+  def __init__(self, title, href):
+    self.title = title
+    self.href = href
+  def __str__(self):
+    return '(title=%s, href=%s)' % (self.title, self.href)
+  def __repr__(self):
+    return self.__str__()
 
 class Tag:
   def __init__(self, *args, **kwargs):
@@ -31,17 +35,19 @@ class HomePage(Page):
     self.recent_blogs = kwargs.get('recent_blogs')
     self.recent_tags = kwargs.get('recent_tags')
 
-class BlogPage(Page):
+class BlogPage:
   def __init__(self, *args, **kwargs):
-    super(BlogPage, self).__init__(*args, **kwargs)
     self.title = kwargs.get('title')
     self.sub_title = kwargs.get('sub_title')
     self.date = kwargs.get('date')
     self.markdown = kwargs.get('markdown')
     self.html = kwargs.get('html')
     self.tags = kwargs.get('tags')
+    self.href = kwargs.get('href')
     self.prev = kwargs.get('prev')
     self.next = kwargs.get('next')
+  def __str__(self):
+    return 'BlogPage(\ntitle:%s\nsub_title:%s\ndate:%s\nmarkdown:%s\nhtml:%s\ntags:%s\nhref:%s\nprev:%s\nnext:%s\n)' % (self.title, self.sub_title, self.date, None, None, self.tags, self.href, self.prev, self.next)
 
 class ListPage(Page):
   def __init__(self, *args, **kwargs):
@@ -61,3 +67,4 @@ class BlogItem:
 
     def __repr__(self):
         return self.__str__()
+
