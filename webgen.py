@@ -11,8 +11,7 @@ def main():
 	source.copy_files(config)
 	src = config['base_dir']
 	blogs = source.list_blogs(src + '/src',config['gen_draft'])
-	generator.generateCalendar(blogs,config)
-	logger.info(blogs)
+	generator.generateBlogs(blogs,config)
 	logger.info('Completed generating website')
 
 if __name__ == '__main__':

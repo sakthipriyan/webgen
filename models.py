@@ -21,10 +21,8 @@ class LinkItem:
 
 class Page(object):
   def __init__(self, *args, **kwargs):
-    self.base = kwargs.get('base')
-    self.title = kwargs.get('title')
-    self.css = kwargs.get('css')
-    self.js = kwargs.get('js')
+    self.url = kwargs.get('url')
+    
 
 class HomePage(Page):
   def __init__(self, *args, **kwargs):

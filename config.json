@@ -1,9 +1,10 @@
 {
 	"base_dir" : "/home/sakthipriyan/ws/blog/sakthipriyan.com",
 	"web_copy" : ["css", "fonts", "img", "js"],
-
 	"gen_draft" : true,
-
+	"base_uri": "file:///home/sakthipriyan/ws/blog/sakthipriyan.com/dist/",
+	"blogs_dir": "blogs/",
+	"tags_dir": "tags/",
 	"html" : {
 		"css" : [
 			"bootstrap.min.css",
