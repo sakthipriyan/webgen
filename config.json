@@ -1,8 +1,8 @@
 {
-	"base_dir" : "/home/sakthipriyan/ws/blog/sakthipriyan.com",
+	"base_dir" : "/home/sakthipriyan/workspace/blog/sakthipriyan.com",
 	"web_copy" : ["css", "fonts", "img", "js"],
 	"gen_draft" : true,
-	"base_uri": "file:///home/sakthipriyan/ws/blog/sakthipriyan.com/dist/",
+	"base_uri": "file:///home/sakthipriyan/workspace/blog/sakthipriyan.com/dist/",
 	"blogs_dir": "blogs/",
 	"tags_dir": "tags/",
 	"html" : {

@@ -1,12 +1,13 @@
-import logging
 import os
 import logging
 import shutil
-from models import BlogItem 
+import datetime
 
 logger = logging.getLogger(__name__)
 
-def list_blogs(src, gen_draft=False):
+def list_blogs(config):
+	src = config['base_dir'] + '/src'
+	gen_draft = config['gen_draft']
 	logger.debug('Looking at src directory %s', src)
 	blogs = []
 	skipped = 0
@@ -18,16 +19,15 @@ def list_blogs(src, gen_draft=False):
 				day_dir = month_dir + '/' + day
 				for article in os.listdir(day_dir):
 					article_path = day_dir + '/' + article
-					article_path = '/'.join(article_path.split('/')[-4:])
+					logger.debug('Found blog in location %s', article_path)
 					if gen_draft or article_path.endswith('.md') and not article_path.endswith('draft.md'):
-						blogs.append(BlogItem(article_path))
+						blogs.append(get_date_blog(article_path))
 					else:
 						skipped = skipped + 1
 	logger.debug('Total number of blogs loadded %s', len(blogs))
 	logger.debug('Total number of blogs skipped %s', skipped)
-	blogs.sort(key = lambda r : r.date)	
+	blogs.sort(key=lambda x: x[0])
 	return blogs
-
 
 def copy_files(config):
 	src = config['base_dir']
@@ -39,5 +39,9 @@ def copy_files(config):
 	for folder in web_copy:
 		shutil.copytree('%s/web/%s' % (src,folder), '%s/%s' % (dist,folder))
 
-
-
+def get_date_blog(article_path):
+	article_path_split = article_path.split('/')
+	location = '/'.join(article_path_split[-4:]).replace('.md','.html')
+	date_str = ''.join(article_path_split[-4:-1])
+	date = datetime.datetime.strptime(date_str, "%Y%m%d").date()
+	return (date,article_path,location)

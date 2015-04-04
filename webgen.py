@@ -9,9 +9,9 @@ def main():
 	logger.info('Generating website...')
 	config = json.load(open(sys.argv[1]))
 	source.copy_files(config)
-	src = config['base_dir']
-	blogs = source.list_blogs(src + '/src',config['gen_draft'])
-	generator.generateBlogs(blogs,config)
+	blogs = source.list_blogs(config)
+	#logger.debug('List of blogs %s' % blogs)
+	generator.generate_blogs(blogs, config)
 	logger.info('Completed generating website')
 
 if __name__ == '__main__':
