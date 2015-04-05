@@ -1,5 +1,5 @@
 from jinja2 import Environment, FileSystemLoader
-from models import Blog, Link
+from models import Blog, Link, Item, List
 import logging
 import collections
 import markdown
@@ -21,8 +21,8 @@ def generate_blogs(files, config):
 	link_prev_next(generated_blogs)
 	publish_home(config, generated_blogs)
 	publish_blogs(config, generated_blogs)
-	# publishCalendar(config, data)
-	# publishTags(config, data)
+	publish_tags(config, generated_blogs)
+	#publishCalendar(config, data)
 
 def get_blog(config, content, f):
 	title = content[0].strip()
@@ -38,7 +38,7 @@ def get_tags(config, line3):
 	tags = [s.strip() for s in line3.split(',')]
 	tags_link = []
 	for tag in tags:
-		link = Link(tag,  config['base_uri'] + config['tags_dir'] + tag.replace(' ', '_') + '.html')
+		link = Link(tag,  config['base_uri'] + config['tags_dir'] + tag.lower().replace(' ', '_') + '.html')
 		tags_link.append(link)
 	return tags_link
 
@@ -56,21 +56,6 @@ def link_prev_next(generated_blogs):
 			current_blog.next = next_blog.current
 		prev_blog = current_blog
 
-def publish_blogs(config, generated_blogs):
-	logger.info('Generating blog pages')
-	data = {}
-	for blog in generated_blogs:
-		template = get_template(config, 'blog.html')
-		html = template.render(
-			js=config['html']['js'],
-			css=config['html']['css'],
-			title=blog.title,
-			data=blog,
-			base_uri=config['base_uri'])
-		filename = config['base_dir'] + '/dist/' + config['blogs_dir'] + blog.path
-		write_file(filename, html)
-	return data
-
 def publish_home(config, generated_blogs):
 	logger.info('Generating home page')
 	blog = generated_blogs[-1]
@@ -83,6 +68,44 @@ def publish_home(config, generated_blogs):
 		blog=blog,
 		blogs=blogs)
 	write_file(config['base_dir'] + '/dist/' + 'index.html', html)
+
+def publish_blogs(config, generated_blogs):
+	logger.info('Generating blog pages')
+	data = {}
+	for blog in generated_blogs:
+		template = get_template(config, 'blog.html')
+		html = template.render(
+			base_uri=config['base_uri'],
+			js=config['html']['js'],
+			css=config['html']['css'],
+			title=blog.title,
+			data=blog)
+		filename = config['base_dir'] + '/dist/' + config['blogs_dir'] + blog.path
+		write_file(filename, html)
+	return data
+
+def publish_tags(config, generated_blogs):
+	data = {}
+	for blog in generated_blogs:
+		item = Item(blog.date, blog.title, blog.sub_title, blog.tags)
+		for tag in blog.tags:
+			a = tag.href
+			tag_key =  a[a.rindex('/')+1:a.rindex('.')]
+			add_key_value(data, tag_key, item)
+	data = collections.OrderedDict(sorted(data.items()))
+	logger.info('Generating tags pages')
+	template = get_template(config, 'list.html')
+	for key in data:
+		list_page = List('Tags / ' + key.replace('_',' '),data[key],None,None)
+		html = template.render(
+			base_uri=config['base_uri'],
+			js=config['html']['js'],
+			css=config['html']['css'],
+			title=list_page.title,
+			list=list_page
+			)
+		filename = config['base_dir'] + '/dist/' + config['tags_dir'] + key + '.html'
+		write_file(filename, html)
 
 def get_template(config, template_file):
 	base_dir = config['base_dir']
@@ -126,6 +149,12 @@ def two_digit(number):
 
 def add_to_dict_array(dictArray,key,value):
 	if dictArray.has_key(key):
-		dictArray[key].append(value)
+		dictArray[key] = [value] + dictArray[key]
 	else:
 		dictArray[key]=[value]
+
+def add_key_value(data,key,value):
+	if data.has_key(key):
+		data[key] = [value] + data[key]
+	else:
+		data[key]=[value]

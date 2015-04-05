@@ -13,13 +13,19 @@ class Tag:
     self.last_used = kwargs.get('last_used')
     self.count = kwargs.get('count')
 
-class LinkItem:
-    def __init__(self, *args, **kwargs):
-        self.date = kwargs.get('date')
-        self.link = kwargs.get('link')
-        self.title = kwargs.get('title')
-        self.sub_title = kwargs.get('sub_title')    
-        self.tags = kwargs.get('tags')    
+class List:
+    def __init__(self, title, items, prev_link, next_link):
+        self.title = title
+        self.items = items
+        self.prev = prev_link
+        self.next = next_link
+
+class Item:
+    def __init__(self, date, title, sub_title, tags):
+        self.date = date
+        self.title = title
+        self.sub_title = sub_title
+        self.tags = tags
 
 class Blog:
   def __init__(self, *args, **kwargs):
@@ -37,20 +43,3 @@ class Blog:
         self.path, self.title, self.sub_title, self.date, len(self.html), self.tags, self.current, self.prev, self.next)
   def __repr__(self):
     return self.__str__()
-
-class ListPage:
-  def __init__(self, *args, **kwargs):
-    super(ListPage, self).__init__(*args, **kwargs)
-    self.link_items = kwargs.get('link_items') 
-    self.prev = kwargs.get('prev')
-    self.next = kwargs.get('next')
-
-# class BlogItem:
-#     def __init__(self, path):
-#         date_str = ''.join(path.split('/')[-4:-1])
-#         self.date = datetime.datetime.strptime(date_str, "%Y%m%d").date()
-#         self.path = path    
-#     def __str__(self):
-#         return '(date=%s, path=%s)' % (self.date, self.path)
-#     def __repr__(self):
-#         return self.__str__()
