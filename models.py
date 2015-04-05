@@ -21,7 +21,8 @@ class List:
         self.next = next_link
 
 class Item:
-    def __init__(self, date, title, sub_title, tags):
+    def __init__(self, href, date, title, sub_title, tags):
+        self.href = href
         self.date = date
         self.title = title
         self.sub_title = sub_title

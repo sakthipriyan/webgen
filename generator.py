@@ -59,7 +59,7 @@ def link_prev_next(generated_blogs):
 def publish_home(config, generated_blogs):
 	logger.info('Generating home page')
 	blog = generated_blogs[-1]
-	blogs = generated_blogs[1:config['home_recent_count']+1]
+	blogs = reversed(generated_blogs[1:config['home_recent_count']+1])
 	template = get_template(config, 'home.html')
 	html = template.render(
 		base_uri=config['base_uri'],
@@ -87,7 +87,7 @@ def publish_blogs(config, generated_blogs):
 def publish_tags(config, generated_blogs):
 	data = {}
 	for blog in generated_blogs:
-		item = Item(blog.date, blog.title, blog.sub_title, blog.tags)
+		item = Item(blog.current.href, blog.date, blog.title, blog.sub_title, blog.tags)
 		for tag in blog.tags:
 			a = tag.href
 			tag_key =  a[a.rindex('/')+1:a.rindex('.')]
