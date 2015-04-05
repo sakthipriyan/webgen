@@ -21,13 +21,6 @@ class LinkItem:
         self.sub_title = kwargs.get('sub_title')    
         self.tags = kwargs.get('tags')    
 
-class HomePage:
-  def __init__(self, *args, **kwargs):
-    self.url = kwargs.get('url')
-    self.last_blog = kwargs.get('last_blog')
-    self.recent_blogs = kwargs.get('recent_blogs')
-    self.recent_tags = kwargs.get('recent_tags')
-
 class Blog:
   def __init__(self, *args, **kwargs):
     self.path = kwargs.get('path')

@@ -1,5 +1,5 @@
 from jinja2 import Environment, FileSystemLoader
-from models import HomePage, Blog, Link
+from models import Blog, Link
 import logging
 import collections
 import markdown
@@ -19,7 +19,8 @@ def generate_blogs(files, config):
 			blog = get_blog(config, content, f)
 			generated_blogs.append(blog)
 	link_prev_next(generated_blogs)
-	data = publish_blogs(config, generated_blogs)
+	publish_home(config, generated_blogs)
+	publish_blogs(config, generated_blogs)
 	# publishCalendar(config, data)
 	# publishTags(config, data)
 
@@ -56,61 +57,45 @@ def link_prev_next(generated_blogs):
 		prev_blog = current_blog
 
 def publish_blogs(config, generated_blogs):
+	logger.info('Generating blog pages')
 	data = {}
 	for blog in generated_blogs:
-		base_dir = config['base_dir']
-		env = getEnvironment(base_dir + '/web/html')
-		template = env.get_template('blog.html')
+		template = get_template(config, 'blog.html')
 		html = template.render(
-			js=config['html']['js'], 
-			css=config['html']['css'], 
+			js=config['html']['js'],
+			css=config['html']['css'],
 			title=blog.title,
-			data=blog, 
+			data=blog,
 			base_uri=config['base_uri'])
-		filename = base_dir + '/dist/' + config['blogs_dir'] + blog.path
-		print filename
-		if not os.path.exists(os.path.dirname(filename)):
-			os.makedirs(os.path.dirname(filename))
-		with open(filename, "w") as f:
-			f.write(html)
-			f.close()
-
+		filename = config['base_dir'] + '/dist/' + config['blogs_dir'] + blog.path
+		write_file(filename, html)
 	return data
 
+def publish_home(config, generated_blogs):
+	logger.info('Generating home page')
+	blog = generated_blogs[-1]
+	blogs = generated_blogs[1:config['home_recent_count']+1]
+	template = get_template(config, 'home.html')
+	html = template.render(
+		base_uri=config['base_uri'],
+		js=config['html']['js'],
+		css=config['html']['css'],
+		blog=blog,
+		blogs=blogs)
+	write_file(config['base_dir'] + '/dist/' + 'index.html', html)
 
-# Blog(
-# path:2015/04/01/gitconfig-alias.html
-# title:Git Configuration Short hand
-# sub_title:Alias for generally used Git commands
-# date:2015-04-01
-# html length:321
-# tags:[(title:git, href:file:///home/sakthipriyan/workspace/blog/sakthipriyan.com/dist/tags/git.html), (title:config, href:file:///home/sakthipriyan/workspace/blog/sakthipriyan.com/dist/tags/config.html), (title:version control, href:file:///home/sakthipriyan/workspace/blog/sakthipriyan.com/dist/tags/version_control.html), (title:.gitconfig, href:file:///home/sakthipriyan/workspace/blog/sakthipriyan.com/dist/tags/.gitconfig.html), (title:setup, href:file:///home/sakthipriyan/workspace/blog/sakthipriyan.com/dist/tags/setup.html)]
-# current:(title:Git Configuration Short hand, href:file:///home/sakthipriyan/workspace/blog/sakthipriyan.com/dist/blogs/2015/04/01/gitconfig-alias.html)
-# prev:(title:Falcon set up, href:file:///home/sakthipriyan/workspace/blog/sakthipriyan.com/dist/blogs/2015/03/31/falcon-setup.html)
-# next:None
-# )
+def get_template(config, template_file):
+	base_dir = config['base_dir']
+	env = Environment(loader=FileSystemLoader(base_dir + '/web/html'))
+	return env.get_template(template_file)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def getEnvironment(path):
-	return Environment(loader=FileSystemLoader(path))
-
-#generateBlog('/home/sakthipriyan/ws/blog/sakthipriyan.com','2015/03/12/first-blog-done.md')
-
-def generate(blogs,config):
-	pass
+def write_file(filename, content):
+	logger.debug('Writing content to file ' + filename)
+	if not os.path.exists(os.path.dirname(filename)):
+		os.makedirs(os.path.dirname(filename))
+	with open(filename, "w") as f:
+		f.write(content)
+		f.close()
 
 def publishCalendar(config, data):
 	pass
