@@ -10,7 +10,6 @@ def main():
 	config = json.load(open(sys.argv[1]))
 	source.copy_files(config)
 	blogs = source.list_blogs(config)
-	#logger.debug('List of blogs %s' % blogs)
 	generator.generate_blogs(blogs, config)
 	logger.info('Completed generating website')
 
