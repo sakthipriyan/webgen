@@ -8,15 +8,16 @@ class Link:
     return self.__str__()
 
 class Tag:
-  def __init__(self, *args, **kwargs):
-    self.link = kwargs.get('link')
-    self.last_used = kwargs.get('last_used')
-    self.count = kwargs.get('count')
+    def __init__(self, title, href, size):
+        self.title = title
+        self.href = href
+        self.size = size
 
 class List:
-    def __init__(self, title, items, prev_link, next_link):
-        self.title = title
+    def __init__(self, key, items, current_link, prev_link=None, next_link=None):
+        self.key = key
         self.items = items
+        self.current = current_link
         self.prev = prev_link
         self.next = next_link
 

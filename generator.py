@@ -1,11 +1,12 @@
 from jinja2 import Environment, FileSystemLoader
-from models import Blog, Link, Item, List
+from models import Blog, Link, Item, List, Tag
 import logging
 import collections
 import markdown
 import os
 
 logger = logging.getLogger(__name__)
+months = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
 def generate_blogs(files, config):
 	generated_blogs = []
@@ -22,7 +23,7 @@ def generate_blogs(files, config):
 	publish_home(config, generated_blogs)
 	publish_blogs(config, generated_blogs)
 	publish_tags(config, generated_blogs)
-	#publishCalendar(config, data)
+	publish_calendar(config, generated_blogs)
 
 def get_blog(config, content, f):
 	title = content[0].strip()
@@ -85,6 +86,7 @@ def publish_blogs(config, generated_blogs):
 	return data
 
 def publish_tags(config, generated_blogs):
+	logger.info('Generating tags pages')
 	data = {}
 	for blog in generated_blogs:
 		item = Item(blog.current.href, blog.date, blog.title, blog.sub_title, blog.tags)
@@ -93,19 +95,57 @@ def publish_tags(config, generated_blogs):
 			tag_key =  a[a.rindex('/')+1:a.rindex('.')]
 			add_key_value(data, tag_key, item)
 	data = collections.OrderedDict(sorted(data.items()))
-	logger.info('Generating tags pages')
 	template = get_template(config, 'list.html')
-	for key in data:
-		list_page = List('Tags / ' + key.replace('_',' '),data[key],None,None)
+	tag_list = generate_tags_list(config,data)
+
+	for tag_page in tag_list:
 		html = template.render(
 			base_uri=config['base_uri'],
 			js=config['html']['js'],
 			css=config['html']['css'],
-			title=list_page.title,
-			list=list_page
+			title=tag_page.current.title,
+			list=tag_page
 			)
-		filename = config['base_dir'] + '/dist/' + config['tags_dir'] + key + '.html'
+		filename = config['base_dir'] + '/dist/' + config['tags_dir'] + tag_page.key + '.html'
 		write_file(filename, html)
+	publish_tagcloud(config, data)
+
+def generate_tags_list(config, data):
+	tag_list = []
+	prev_page = None
+	for key in data:
+		current_link = Link('Tags / ' + key.replace('_',' '),  config['base_uri'] + config['tags_dir'] + key + '.html')
+		prev_link = None
+		if prev_page:
+			prev_page.next = current_link
+			prev_link = prev_page.current
+		current_page = List(key, data[key], current_link, prev_link)
+		tag_list.append(current_page)
+		prev_page = current_page
+	return tag_list
+
+def publish_tagcloud(config, data):
+	logger.info('Generating tagcloud page')
+	max_count = 0
+	for key in data:
+		length = len(data[key])
+		if max_count < length:
+			max_count = length
+	tags = []
+	for key in data:
+		length = len(data[key])
+		size = ((length * 1.0)/max_count*30)+10
+		tags.append(Tag(key.replace('_',' '),config['base_uri'] + config['tags_dir'] + key + '.html',size))
+	template = get_template(config, 'tags.html')
+	html = template.render(
+			base_uri=config['base_uri'],
+			js=config['html']['js'],
+			css=config['html']['css'],
+			title='Tags',
+			tags=tags
+			)
+	filename = config['base_dir'] + '/dist/' + 'tags.html'
+	write_file(filename, html)
 
 def get_template(config, template_file):
 	base_dir = config['base_dir']
@@ -120,38 +160,68 @@ def write_file(filename, content):
 		f.write(content)
 		f.close()
 
-def publishCalendar(config, data):
-	pass
-
-def publishTags(config, data):
-	pass
-
-def generateCalendar(blogs,config):
+def publish_calendar(config, blogs):
 	logger.debug('Generating calendar')
-	count = 0
-	calendar = {}
+	year = collections.OrderedDict()
+	month = collections.OrderedDict()
+	date = collections.OrderedDict()
 	for blog in blogs:
+		item = Item(blog.current.href, blog.date, blog.title, blog.sub_title, blog.tags)
 		y = str(blog.date.year)
-		ym = y + two_digit(blog.date.month)
-		ymd = ym + two_digit(blog.date.day)
-		add_to_dict_array(calendar, y, blog)
-		add_to_dict_array(calendar, ym, blog)
-		add_to_dict_array(calendar, ymd, blog)
+		ym = y + '/' +two_digit(blog.date.month)
+		ymd = ym + '/' + two_digit(blog.date.day)
+		add_key_value(year, y, item)
+		add_key_value(month, ym, item)
+		add_key_value(date, ymd, item)
+	publish_calendar_by(year, config)
+	publish_calendar_by(month, config)
+	publish_calendar_by(date, config)
 
-	od = collections.OrderedDict(sorted(calendar.items()))
-	logger.debug('%s pages generated for calendar' % count)
+def publish_calendar_by(data, config):
+	template = get_template(config, 'list.html')
+	for key in generate_calendar_list(config, data):
+		html = template.render(
+			base_uri=config['base_uri'],
+			js=config['html']['js'],
+			css=config['html']['css'],
+			title=key.current.title,
+			list=key			)
+		filename = config['base_dir'] + '/dist/' + config['blogs_dir'] + key.key +'/index.html'
+		write_file(filename, html)
+
+
+def generate_calendar_list(config, data):
+	calendar_list = []
+	prev_page = None
+	for key in data:
+		print key
+		current_link = Link( get_cal_title(key),  config['base_uri'] + config['blogs_dir'] + key + '/index.html')
+		prev_link = None
+		if prev_page:
+			prev_page.next = current_link
+			prev_link = prev_page.current
+		current_page = List(key, data[key], current_link, prev_link)
+		calendar_list.append(current_page)
+		prev_page = current_page
+	return calendar_list
+
+def get_cal_title(title):
+	cal = title.split('/')
+	size = len(cal)
+	if size == 1:
+		return title
+	elif size == 2:
+		return months[int(cal[1])] + ' ' + cal[0]
+	elif size == 3:
+		return months[int(cal[1])] + ' ' + cal[2] + ', ' + cal[0]
+	else:
+		return title
 
 def two_digit(number):
 	if number > 9:
 		return str(number)
 	else:
 		return '0' + str(number)
-
-def add_to_dict_array(dictArray,key,value):
-	if dictArray.has_key(key):
-		dictArray[key] = [value] + dictArray[key]
-	else:
-		dictArray[key]=[value]
 
 def add_key_value(data,key,value):
 	if data.has_key(key):
