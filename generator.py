@@ -3,7 +3,7 @@ from models import Blog, Link, Item, List, Tag
 import logging
 import collections
 import markdown
-import os
+import os, shutil
 
 logger = logging.getLogger(__name__)
 months = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -67,7 +67,8 @@ def publish_home(config, generated_blogs):
 		js=config['html']['js'],
 		css=config['html']['css'],
 		blog=blog,
-		blogs=blogs)
+		blogs=blogs,
+		title='Home')
 	write_file(config['base_dir'] + '/dist/' + 'index.html', html)
 
 def publish_blogs(config, generated_blogs):
@@ -103,7 +104,7 @@ def publish_tags(config, generated_blogs):
 			base_uri=config['base_uri'],
 			js=config['html']['js'],
 			css=config['html']['css'],
-			title=tag_page.current.title,
+			title='Tags / ' + tag_page.current.title,
 			list=tag_page
 			)
 		filename = config['base_dir'] + '/dist/' + config['tags_dir'] + tag_page.key + '.html'
@@ -114,7 +115,7 @@ def generate_tags_list(config, data):
 	tag_list = []
 	prev_page = None
 	for key in data:
-		current_link = Link('Tags / ' + key.replace('_',' '),  config['base_uri'] + config['tags_dir'] + key + '.html')
+		current_link = Link(key.replace('_',' '),  config['base_uri'] + config['tags_dir'] + key + '.html')
 		prev_link = None
 		if prev_page:
 			prev_page.next = current_link
@@ -176,6 +177,10 @@ def publish_calendar(config, blogs):
 	publish_calendar_by(year, config)
 	publish_calendar_by(month, config)
 	publish_calendar_by(date, config)
+	top = year.iterkeys().next()
+	source = config['base_dir'] + '/dist/' + config['blogs_dir'] + top +'/index.html'
+	dest = config['base_dir'] + '/dist/' + 'calendar.html'
+	shutil.copyfile(source, dest)
 
 def publish_calendar_by(data, config):
 	template = get_template(config, 'list.html')
@@ -188,7 +193,6 @@ def publish_calendar_by(data, config):
 			list=key			)
 		filename = config['base_dir'] + '/dist/' + config['blogs_dir'] + key.key +'/index.html'
 		write_file(filename, html)
-
 
 def generate_calendar_list(config, data):
 	calendar_list = []

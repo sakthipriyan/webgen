@@ -3,7 +3,7 @@
 	"web_copy" : ["css", "fonts", "img", "js"],
 	"gen_draft" : true,
 	"base_uri": "file:///home/sakthipriyan/workspace/blog/sakthipriyan.com/dist/",
-	"blogs_dir": "blogs/",
+	"blogs_dir": "",
 	"tags_dir": "tags/",
 	"home_recent_count" : 2,
 	"html" : {
