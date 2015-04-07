@@ -61,6 +61,8 @@ def publish_home(config, generated_blogs):
 	logger.info('Generating home page')
 	blog = generated_blogs[-1]
 	start = len(generated_blogs) - config['home_recent_count'] - 1
+	if start < 0:
+		start = 0
 	blogs = reversed(generated_blogs[start:-1])
 	template = get_template(config, 'home.html')
 	html = template.render(
