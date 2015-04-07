@@ -14,9 +14,9 @@
 			"main.css"
 		],
 		"js" : [
+			"jquery-1.11.2.min.js",
 			"bootstrap.min.js",
 			"highlight.min.js",
-			"jquery-1.11.2.min.js",
 			"main.js"
 		]
 	}
