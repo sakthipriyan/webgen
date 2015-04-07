@@ -60,6 +60,7 @@ def link_prev_next(generated_blogs):
 def publish_home(config, generated_blogs):
 	logger.info('Generating home page')
 	blog = generated_blogs[-1]
+	logger.info('Generated blogs %s. Recent count %s' % (len(generated_blogs),  config['home_recent_count']))
 	blogs = reversed(generated_blogs[1:config['home_recent_count']+1])
 	template = get_template(config, 'home.html')
 	html = template.render(
@@ -198,7 +199,6 @@ def generate_calendar_list(config, data):
 	calendar_list = []
 	prev_page = None
 	for key in data:
-		print key
 		current_link = Link( get_cal_title(key),  config['base_uri'] + config['blogs_dir'] + key + '/index.html')
 		prev_link = None
 		if prev_page:
