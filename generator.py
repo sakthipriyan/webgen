@@ -3,7 +3,7 @@ from models import Blog, Link, Item, List, Tag
 import logging
 import collections
 import markdown
-import os, shutil
+import os, shutil, re
 
 logger = logging.getLogger(__name__)
 months = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -26,13 +26,13 @@ def generate_blogs(files, config):
 	publish_calendar(config, generated_blogs)
 
 def get_blog(config, content, f):
-	title = content[0].strip()
-	sub_title = content[1].strip()
+	title = re.sub('^#','',content[0].strip())
+	sub_title = re.sub('^##','',content[1].strip())
 	tags =  get_tags(config, content[2])
 	md = ''.join(content[3:])
 	html = markdown.markdown(md)
 	link = Link(title, config['base_uri'] + config['blogs_dir'] + f[2])
-	return Blog(path=f[2], title=title, sub_title=sub_title, 
+	return Blog(path=f[2], title=title, sub_title=sub_title,
 		date=f[0], html=html, tags=tags, current=link)
 
 def get_tags(config, line3):
