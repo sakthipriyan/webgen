@@ -26,8 +26,8 @@ def generate_blogs(files, config):
 	publish_calendar(config, generated_blogs)
 
 def get_blog(config, content, f):
-	title = re.sub('^#','',content[0].strip())
-	sub_title = re.sub('^##','',content[1].strip())
+	title = re.sub('^#','',content[0].strip()).strip()
+	sub_title = re.sub('^##','',content[1].strip()).strip()
 	tags =  get_tags(config, content[2])
 	md = ''.join(content[3:])
 	html = markdown.markdown(md)
