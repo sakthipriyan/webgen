@@ -180,7 +180,8 @@ def publish_calendar(config, blogs):
 	publish_calendar_by(year, config)
 	publish_calendar_by(month, config)
 	publish_calendar_by(date, config)
-	top = year.iterkeys().next()
+	#top = year.iterkeys().next()
+	top = next(reversed(year))
 	source = config['base_dir'] + '/dist/' + config['blogs_dir'] + top +'/index.html'
 	dest = config['base_dir'] + '/dist/' + 'calendar.html'
 	shutil.copyfile(source, dest)
