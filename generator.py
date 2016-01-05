@@ -13,7 +13,7 @@ def generate_blogs(files, config):
 	generated_blogs = []
 	for f in files:
 		logger.debug('Processing file %s' % f[1])
-		with codecs.open (f[1], 'utf-8') as md_file:
+		with codecs.open (f[1], encoding='utf-8') as md_file:
 			content = md_file.readlines()
 			if(len(content) < 4):
 				logger.warn('File %s Contains less than 4 lines, skipping' % f[1])
