@@ -4,6 +4,7 @@ import logging
 import collections
 import markdown
 import os, shutil, re
+import codecs
 
 logger = logging.getLogger(__name__)
 months = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -12,7 +13,7 @@ def generate_blogs(files, config):
 	generated_blogs = []
 	for f in files:
 		logger.debug('Processing file %s' % f[1])
-		with open (f[1], "r") as md_file:
+		with codecs.open (f[1], 'utf-8') as md_file:
 			content = md_file.readlines()
 			if(len(content) < 4):
 				logger.warn('File %s Contains less than 4 lines, skipping' % f[1])
@@ -160,7 +161,7 @@ def write_file(filename, content):
 	logger.debug('Writing content to file ' + filename)
 	if not os.path.exists(os.path.dirname(filename)):
 		os.makedirs(os.path.dirname(filename))
-	with open(filename, "w") as f:
+	with codecs.open(filename, 'w', 'utf-8') as f:
 		f.write(content)
 		f.close()
 
