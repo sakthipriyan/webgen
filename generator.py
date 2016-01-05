@@ -31,7 +31,7 @@ def get_blog(config, content, f):
 	sub_title = re.sub('^##','',content[1].strip()).strip()
 	tags =  get_tags(config, content[2])
 	md = ''.join(content[3:])
-	html = markdown.markdown(md)
+	html = markdown.markdown(md, extensions=['markdown.extensions.tables'])
 	link = Link(title, config['base_uri'] + config['blogs_dir'] + f[2])
 	return Blog(path=f[2], title=title, sub_title=sub_title,
 		date=f[0], html=html, tags=tags, current=link)
