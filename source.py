@@ -34,7 +34,9 @@ def copy_files(config):
 	web_copy = config['web_copy']
 	logger.info('Source directory %s', src)
 	dist = src + '/dist'
-	shutil.rmtree(dist,True)
+	for the_file in os.listdir(dist):
+		file_path = os.path.join(dist, the_file)
+		shutil.rmtree(file_path,True)
 	logger.info('Website is generated at %s', dist)
 	for folder in web_copy:
 		shutil.copytree('%s/web/%s' % (src,folder), '%s/%s' % (dist,folder))
