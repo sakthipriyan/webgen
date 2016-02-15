@@ -25,7 +25,7 @@ def open_browser(url):
 def refresh_browser():
     response = requests.get('http://%s:%s/json' %(hostname,chrome_port))
     for page in response.json():
-        if hostname_port in page['url']:
+        if  page['type'] == 'page' and hostname_port in page['url']:
                 logger.info('Refreshing page %s' % page['url'])
                 ws = create_connection(page['webSocketDebuggerUrl'])
                 ws.send(refresh_json)
